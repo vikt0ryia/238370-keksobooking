@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Виктория Касаковская](https://up.htmlacademy.ru/javascript/14/user/238370).
-* Наставник: `Неизвестно`.
+* Наставник: [Руфат Хасларов](https://up.htmlacademy.ru/javascript/14/user/372587).
 
 ---
 
