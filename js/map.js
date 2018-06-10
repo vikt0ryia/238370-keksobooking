@@ -41,7 +41,7 @@ var getRandom = function (list) {
   return Math.floor(Math.random() * list.length);
 };
 
-function compareRandom(a, b) {
+var compareRandom = function (a, b) {
   return Math.random() - 0.5;
 }
 
@@ -86,8 +86,6 @@ for (var j = 0; j < AD_QUANTITY; j++) {
   AD_TITLE.splice(titleRand, 1);
 }
 
-console.log(ads);
-
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
@@ -113,18 +111,9 @@ for (var l = 0; l < AD_QUANTITY; l++) {
 }
 pinList.appendChild(fragment);
 
-
-
-
-
-
 var cardTemplate = document.querySelector('template')
   .content
   .querySelector('.map__card');
-
-var featuresList = document.querySelector('template')
-  .content
-  .querySelectorAll('.popup__feature');
 
 var renderCard = function (ad) {
   var cardElement = cardTemplate.cloneNode(true);
@@ -136,22 +125,25 @@ var renderCard = function (ad) {
   cardElement.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
 
-  for (var k = 0; k < featuresList.length; k++) {
-    var coincidence = false;
-    for (var g = 0; g < adFeatures.length; g++) {
-      if (featuresList[k].classList[1] === ('popup__feature--' + adFeatures[g])) {
-        coincidence = true;
-        console.log('popup');
-      }
-    }
-    if (coincidence === false) {
-
-      // Здесь должен был бы удаляться элемент
-    }
+  var featuresContainer = cardElement.querySelector('.popup__features');
+  featuresContainer.innerHTML = '';
+  for (var i = 0; i < ad.offer.features.length; i++) {
+    featuresContainer.innerHTML += '<li class="popup__feature popup__feature--' + ad.offer.features[i] + '"></li>';
   }
 
+  cardElement.querySelector('.popup__description').textContent = ad.offer.description;
 
-  
+  var photosContainer = cardElement.querySelector('.popup__photos');
+  var photoTemplate = photosContainer.querySelector('.popup__photo');
+  photosContainer.removeChild(photoTemplate);
+  for (var j = 0; j < ad.offer.photos.length; j++) {
+    var photoElement = photoTemplate.cloneNode(true);
+    photoElement.src = ad.offer.photos[j];
+    photosContainer.appendChild(photoElement);
+  }
+
+  cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
+
   return cardElement;
 };
 
