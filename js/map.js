@@ -45,8 +45,6 @@ var compareRandom = function (a, b) {
   return Math.random() - 0.5;
 }
 
-var ads = [];
-
 var createAd = function () {
   var ad = {
     author: {
@@ -68,23 +66,8 @@ var createAd = function () {
     location: {x: x,
       y: y}
   };
-
   return ad;
 };
-
-for (var j = 0; j < AD_QUANTITY; j++) {
-  var avatarRand = getRandom(AVATARS);
-  var titleRand = getRandom(AD_TITLE);
-  var x = getRandomInRange(300, 900);
-  var y = getRandomInRange(130, 630);
-  var adFeatures = FEATURES.slice().sort(compareRandom);
-  adFeatures.length = getRandom(adFeatures);
-
-  ads[j] = createAd();
-
-  AVATARS.splice(avatarRand, 1);
-  AD_TITLE.splice(titleRand, 1);
-}
 
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
@@ -105,10 +88,24 @@ var renderPin = function (ad) {
   return pinElement;
 };
 
+var ads = [];
 var fragment = document.createDocumentFragment();
-for (var l = 0; l < AD_QUANTITY; l++) {
-  fragment.appendChild(renderPin(ads[l]));
+
+for (var j = 0; j < AD_QUANTITY; j++) {
+  var avatarRand = getRandom(AVATARS);
+  var titleRand = getRandom(AD_TITLE);
+  var x = getRandomInRange(300, 900);
+  var y = getRandomInRange(130, 630);
+  var adFeatures = FEATURES.slice().sort(compareRandom);
+  adFeatures.length = getRandom(adFeatures);
+
+  ads[j] = createAd();
+  fragment.appendChild(renderPin(createAd()));
+
+  AVATARS.splice(avatarRand, 1);
+  AD_TITLE.splice(titleRand, 1);
 }
+
 pinList.appendChild(fragment);
 
 var cardTemplate = document.querySelector('template')
