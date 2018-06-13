@@ -1,6 +1,6 @@
 'use strict';
 
-var AD_TITLE = ['Большая уютная квартира',
+var AD_TITLES = ['Большая уютная квартира',
   'Маленькая неуютная квартира',
   'Огромный прекрасный дворец',
   'Маленький ужасный дворец',
@@ -21,12 +21,24 @@ var AD_QUANTITY = 8;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
-var TYPES_HOUSE = {
+var HOUSE_TYPES = {
   house: 'Дом',
   palace: 'Дворец',
   flat: 'Квартира',
   bungalo: 'Бунгало'
 };
+
+var map = document.querySelector('.map');
+var pinList = document.querySelector('.map__pins');
+var filtersContainer = document.querySelector('.map__filters-container');
+
+var cardTemplate = document.querySelector('template')
+  .content
+  .querySelector('.map__card');
+
+var pinTemplate = document.querySelector('template')
+  .content
+  .querySelector('.map__pin');
 
 var getRandomInRange = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -36,22 +48,30 @@ var getRandomValueFromArray = function (array) {
   return array[Math.floor(Math.random() * array.length)];
 };
 
-var compareRandom = function () {
-  return Math.random() - 0.5;
+var shuffleArray = function (array) {
+  var newArray = array.slice();
+  newArray = newArray.sort(function () {
+    return Math.random() - 0.5;
+  });
+  return newArray;
 };
 
-var createAd = function () {
+var getRandomValuesFromArray = function (array) {
+  var newArray = shuffleArray(array);
+  newArray.length = getRandomInRange(0, array.length);
+  return newArray;
+};
+
+var createAd = function (i) {
   var x = getRandomInRange(300, 900);
   var y = getRandomInRange(130, 630);
-  var adFeatures = FEATURES.slice().sort(compareRandom);
-  adFeatures.length = getRandomInRange(0, adFeatures.length);
 
   var ad = {
     author: {
       avatar: 'img/avatars/user0' + (i + 1) + '.png'
     },
     offer: {
-      title: AD_TITLE[i],
+      title: AD_TITLES[i],
       address: x + ', ' + y,
       price: getRandomInRange(1000, 1000000),
       type: getRandomValueFromArray(TYPES),
@@ -59,9 +79,9 @@ var createAd = function () {
       guests: getRandomInRange(1, 5),
       checkin: getRandomValueFromArray(AD_TIMES),
       checkout: getRandomValueFromArray(AD_TIMES),
-      features: adFeatures,
+      features: getRandomValuesFromArray(FEATURES),
       description: '',
-      photos: AD_PHOTOS.slice().sort(compareRandom)
+      photos: shuffleArray(AD_PHOTOS)
     },
     location: {x: x,
       y: y}
@@ -69,14 +89,13 @@ var createAd = function () {
   return ad;
 };
 
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-
-var pinList = document.querySelector('.map__pins');
-
-var pinTemplate = document.querySelector('template')
-  .content
-  .querySelector('.map__pin');
+var createAds = function () {
+  var ads = [];
+  for (var i = 0; i < AD_QUANTITY; i++) {
+    ads[i] = createAd(i);
+  }
+  return ads;
+};
 
 var renderPin = function (ad) {
   var pinElement = pinTemplate.cloneNode(true);
@@ -88,21 +107,14 @@ var renderPin = function (ad) {
   return pinElement;
 };
 
-var ads = [];
-
 var fragment = document.createDocumentFragment();
 
-for (var i = 0; i < AD_QUANTITY; i++) {
-  ads[i] = createAd();
-
-  fragment.appendChild(renderPin(ads[i]));
-}
-
-pinList.appendChild(fragment);
-
-var cardTemplate = document.querySelector('template')
-  .content
-  .querySelector('.map__card');
+var renderPins = function (ads) {
+  for (var i = 0; i < ads.length; i++) {
+    fragment.appendChild(renderPin(ads[i]));
+  }
+  return fragment;
+};
 
 var renderCard = function (ad) {
   var cardElement = cardTemplate.cloneNode(true);
@@ -110,7 +122,7 @@ var renderCard = function (ad) {
   cardElement.querySelector('.popup__title').textContent = ad.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = ad.offer.price + '₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = TYPES_HOUSE[ad.offer.type];
+  cardElement.querySelector('.popup__type').textContent = HOUSE_TYPES[ad.offer.type];
   cardElement.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
 
@@ -136,7 +148,11 @@ var renderCard = function (ad) {
   return cardElement;
 };
 
-var filtersContainer = document.querySelector('.map__filters-container');
+var adsKeksobooking = createAds();
 
-var cardItem = renderCard(ads[0]);
+pinList.appendChild(renderPins(adsKeksobooking));
+
+var cardItem = renderCard(adsKeksobooking[0]);
 map.insertBefore(cardItem, filtersContainer);
+
+map.classList.remove('map--faded');
