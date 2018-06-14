@@ -58,7 +58,7 @@ var shuffleArray = function (array) {
 
 var getRandomValuesFromArray = function (array) {
   var newArray = shuffleArray(array);
-  newArray.length = getRandomInRange(0, array.length);
+  newArray.length = getRandomInRange(1, array.length);
   return newArray;
 };
 
