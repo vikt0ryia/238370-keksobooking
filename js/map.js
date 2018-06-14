@@ -107,9 +107,9 @@ var renderPin = function (ad) {
   return pinElement;
 };
 
-var fragment = document.createDocumentFragment();
-
 var renderPins = function (ads) {
+  var fragment = document.createDocumentFragment();
+
   for (var i = 0; i < ads.length; i++) {
     fragment.appendChild(renderPin(ads[i]));
   }
@@ -148,11 +148,11 @@ var renderCard = function (ad) {
   return cardElement;
 };
 
-var adsKeksobooking = createAds();
+var ads = createAds();
 
-pinList.appendChild(renderPins(adsKeksobooking));
+pinList.appendChild(renderPins(ads));
 
-var cardItem = renderCard(adsKeksobooking[0]);
+var cardItem = renderCard(ads[0]);
 map.insertBefore(cardItem, filtersContainer);
 
 map.classList.remove('map--faded');
