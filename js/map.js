@@ -150,9 +150,27 @@ var renderCard = function (ad) {
 
 var ads = createAds();
 
-pinList.appendChild(renderPins(ads));
+// pinList.appendChild(renderPins(ads));
 
-var cardItem = renderCard(ads[0]);
-map.insertBefore(cardItem, filtersContainer);
+// var cardItem = renderCard(ads[0]);
+// map.insertBefore(cardItem, filtersContainer);
 
-map.classList.remove('map--faded');
+// map.classList.remove('map--faded');
+
+var pinMain = document.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var adFieldsets = adForm.querySelectorAll('fieldset');
+var mapPins = pinList.querySelectorAll('.map__pin');
+
+pinMain.addEventListener('mouseup', function () {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  for (var i = 0; i < adFieldsets.length; i++) {
+    adFieldsets[i].disabled = false;
+  }
+  pinList.appendChild(renderPins(ads));
+});
+
+console.log(mapPins);
+
+
