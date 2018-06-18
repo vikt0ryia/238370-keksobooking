@@ -169,14 +169,15 @@ var activateForm = function () {
   }
 };
 
-pinMain.addEventListener('mouseup', function () {
-  activateMap();
-  activateForm();
-
+var renderAdPins = function () {
   pinList.appendChild(renderPins(ads));
+};
 
+var addValueInput = function () {
   addressInput.value = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2)) + ',' + (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
+};
 
+var toggleAdModal = function () {
   var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
 
   for (var j = 0; j < mapPins.length; j++) {
@@ -191,4 +192,12 @@ pinMain.addEventListener('mouseup', function () {
       });
     })(j);
   }
+};
+
+pinMain.addEventListener('mouseup', function () {
+  activateMap();
+  activateForm();
+  renderAdPins();
+  addValueInput();
+  toggleAdModal();
 });
