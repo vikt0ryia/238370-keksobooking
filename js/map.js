@@ -185,10 +185,11 @@ var toggleAdModal = function () {
       var adCard = renderCard(ads[x]);
       mapPins[x].addEventListener('click', function () {
         map.insertBefore(adCard, filtersContainer);
+        adCard.classList.remove('hidden');
       });
       var popupClose = adCard.querySelector('.popup__close');
       popupClose.addEventListener('click', function () {
-        map.removeChild(adCard);
+        adCard.classList.add('hidden');
       });
     })(j);
   }
