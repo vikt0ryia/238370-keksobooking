@@ -21,6 +21,9 @@ var AD_QUANTITY = 8;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
+var PIN_MAIN_WIDTH = 65;
+var PIN_MAIN_HEIGHT = 85;
+
 var HOUSE_TYPES = {
   house: 'Дом',
   palace: 'Дворец',
@@ -31,6 +34,10 @@ var HOUSE_TYPES = {
 var map = document.querySelector('.map');
 var pinList = document.querySelector('.map__pins');
 var filtersContainer = document.querySelector('.map__filters-container');
+var pinMain = document.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var adFieldsets = adForm.querySelectorAll('fieldset');
+var addressInput = adForm.querySelector('#address');
 
 var cardTemplate = document.querySelector('template')
   .content
@@ -150,27 +157,38 @@ var renderCard = function (ad) {
 
 var ads = createAds();
 
-// pinList.appendChild(renderPins(ads));
-
-// var cardItem = renderCard(ads[0]);
-// map.insertBefore(cardItem, filtersContainer);
-
-// map.classList.remove('map--faded');
-
-var pinMain = document.querySelector('.map__pin--main');
-var adForm = document.querySelector('.ad-form');
-var adFieldsets = adForm.querySelectorAll('fieldset');
-var mapPins = pinList.querySelectorAll('.map__pin');
-
-pinMain.addEventListener('mouseup', function () {
+var activateMap = function () {
   map.classList.remove('map--faded');
+};
+
+var activateForm = function () {
   adForm.classList.remove('ad-form--disabled');
+
   for (var i = 0; i < adFieldsets.length; i++) {
     adFieldsets[i].disabled = false;
   }
+};
+
+pinMain.addEventListener('mouseup', function () {
+  activateMap();
+  activateForm();
+
   pinList.appendChild(renderPins(ads));
+
+  addressInput.value = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2)) + ',' + (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
+
+  var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
+
+  for (var j = 0; j < mapPins.length; j++) {
+    (function (x) {
+      var adCard = renderCard(ads[x]);
+      mapPins[x].addEventListener('click', function () {
+        map.insertBefore(adCard, filtersContainer);
+      });
+      var popupClose = adCard.querySelector('.popup__close');
+      popupClose.addEventListener('click', function () {
+        map.removeChild(adCard);
+      });
+    })(j);
+  }
 });
-
-console.log(mapPins);
-
-
