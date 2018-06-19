@@ -36,7 +36,7 @@ var pinList = document.querySelector('.map__pins');
 var filtersContainer = document.querySelector('.map__filters-container');
 var pinMain = document.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
-var adFieldsets = adForm.querySelectorAll('fieldset');
+var adFields = adForm.querySelectorAll('fieldset');
 var addressInput = adForm.querySelector('#address');
 
 var cardTemplate = document.querySelector('template')
@@ -123,8 +123,7 @@ var renderPins = function (ads) {
   return fragment;
 };
 
-var renderCard = function (ad) {
-  var cardElement = cardTemplate.cloneNode(true);
+var createAdContent = function (cardElement, ad) {
 
   cardElement.querySelector('.popup__title').textContent = ad.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
@@ -141,16 +140,28 @@ var renderCard = function (ad) {
 
   cardElement.querySelector('.popup__description').textContent = ad.offer.description;
 
+  var photoElements = cardElement.querySelectorAll('.popup__photo');
+  for (var l = 0; l < ad.offer.photos.length; l++) {
+    photoElements[l].src = ad.offer.photos[l];
+  }
+
+  cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
+
+  return cardElement;
+};
+
+var renderCard = function (cardElement, ad) {
+  cardElement = cardTemplate.cloneNode(true);
+
   var photosContainer = cardElement.querySelector('.popup__photos');
   var photoTemplate = photosContainer.querySelector('.popup__photo');
   photosContainer.removeChild(photoTemplate);
   for (var l = 0; l < ad.offer.photos.length; l++) {
     var photoElement = photoTemplate.cloneNode(true);
-    photoElement.src = ad.offer.photos[l];
     photosContainer.appendChild(photoElement);
   }
 
-  cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
+  createAdContent(cardElement, ad);
 
   return cardElement;
 };
@@ -164,8 +175,8 @@ var activateMap = function () {
 var activateForm = function () {
   adForm.classList.remove('ad-form--disabled');
 
-  for (var i = 0; i < adFieldsets.length; i++) {
-    adFieldsets[i].disabled = false;
+  for (var i = 0; i < adFields.length; i++) {
+    adFields[i].disabled = false;
   }
 };
 
@@ -179,19 +190,25 @@ var addValueInput = function () {
 
 var toggleAdModal = function () {
   var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
+  var adCard = map.querySelector('.map__card');
 
-  for (var j = 0; j < mapPins.length; j++) {
+  for (var i = 0; i < mapPins.length; i++) {
     (function (x) {
-      var adCard = renderCard(ads[x]);
       mapPins[x].addEventListener('click', function () {
-        map.insertBefore(adCard, filtersContainer);
+        if (!adCard) {
+          adCard = renderCard(adCard, ads[x]);
+          map.insertBefore(adCard, filtersContainer);
+        } else {
+          createAdContent(adCard, ads[x]);
+        }
         adCard.classList.remove('hidden');
+
+        var popupClose = adCard.querySelector('.popup__close');
+        popupClose.addEventListener('click', function () {
+          adCard.classList.add('hidden');
+        });
       });
-      var popupClose = adCard.querySelector('.popup__close');
-      popupClose.addEventListener('click', function () {
-        adCard.classList.add('hidden');
-      });
-    })(j);
+    })(i);
   }
 };
 
