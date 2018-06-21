@@ -9,9 +9,9 @@ var AD_TITLES = ['Большая уютная квартира',
   'Уютное бунгало далеко от моря',
   'Неуютное бунгало по колено в воде'];
 
-var TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var AD_TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var AD_TIMES = ['12:00', '13:00', '14:00'];
-var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var AD_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var AD_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
@@ -81,12 +81,12 @@ var createAd = function (i) {
       title: AD_TITLES[i],
       address: x + ', ' + y,
       price: getRandomInRange(1000, 1000000),
-      type: getRandomValueFromArray(TYPES),
+      type: getRandomValueFromArray(AD_TYPES),
       rooms: getRandomInRange(1, 5),
       guests: getRandomInRange(1, 5),
       checkin: getRandomValueFromArray(AD_TIMES),
       checkout: getRandomValueFromArray(AD_TIMES),
-      features: getRandomValuesFromArray(FEATURES),
+      features: getRandomValuesFromArray(AD_FEATURES),
       description: '',
       photos: shuffleArray(AD_PHOTOS)
     },
@@ -140,9 +140,13 @@ var createAdContent = function (cardElement, ad) {
 
   cardElement.querySelector('.popup__description').textContent = ad.offer.description;
 
-  var photoElements = cardElement.querySelectorAll('.popup__photo');
+  var photosContainer = cardElement.querySelector('.popup__photos');
+  var photoTemplate = photosContainer.querySelector('.popup__photo');
+  photosContainer.innerHTML = '';
   for (var l = 0; l < ad.offer.photos.length; l++) {
-    photoElements[l].src = ad.offer.photos[l];
+    var photoElement = photoTemplate.cloneNode(true);
+    photoElement.src = ad.offer.photos[l];
+    photosContainer.appendChild(photoElement);
   }
 
   cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
@@ -150,23 +154,11 @@ var createAdContent = function (cardElement, ad) {
   return cardElement;
 };
 
-var renderCard = function (cardElement, ad) {
-  cardElement = cardTemplate.cloneNode(true);
-
-  var photosContainer = cardElement.querySelector('.popup__photos');
-  var photoTemplate = photosContainer.querySelector('.popup__photo');
-  photosContainer.removeChild(photoTemplate);
-  for (var l = 0; l < ad.offer.photos.length; l++) {
-    var photoElement = photoTemplate.cloneNode(true);
-    photosContainer.appendChild(photoElement);
-  }
-
-  createAdContent(cardElement, ad);
-
-  return cardElement;
+var renderAdCard = function () {
+  var сard = cardTemplate.cloneNode(true);
+  сard.classList.add('hidden');
+  map.insertBefore(сard, filtersContainer);
 };
-
-var ads = createAds();
 
 var activateMap = function () {
   map.classList.remove('map--faded');
@@ -184,38 +176,43 @@ var renderAdPins = function () {
   pinList.appendChild(renderPins(ads));
 };
 
-var addValueInput = function () {
+var addValueToAddressInput = function () {
   addressInput.value = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2)) + ',' + (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
+};
+
+var hideElement = function (target) {
+  target.classList.add('hidden');
+};
+
+var showElement = function (target) {
+  target.classList.remove('hidden');
 };
 
 var toggleAdModal = function () {
   var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
   var adCard = map.querySelector('.map__card');
+  var popupClose = adCard.querySelector('.popup__close');
 
-  for (var i = 0; i < mapPins.length; i++) {
-    (function (x) {
-      mapPins[x].addEventListener('click', function () {
-        if (!adCard) {
-          adCard = renderCard(adCard, ads[x]);
-          map.insertBefore(adCard, filtersContainer);
-        } else {
-          createAdContent(adCard, ads[x]);
-        }
-        adCard.classList.remove('hidden');
+  mapPins.forEach(function (elem, i) {
+    elem.addEventListener('click', function () {
+      createAdContent(adCard, ads[i]);
+      showElement(adCard);
+    });
+  });
 
-        var popupClose = adCard.querySelector('.popup__close');
-        popupClose.addEventListener('click', function () {
-          adCard.classList.add('hidden');
-        });
-      });
-    })(i);
-  }
+  popupClose.addEventListener('click', function () {
+    hideElement(adCard);
+  });
+
 };
+
+var ads = createAds();
 
 pinMain.addEventListener('mouseup', function () {
   activateMap();
   activateForm();
   renderAdPins();
-  addValueInput();
+  renderAdCard();
+  addValueToAddressInput();
   toggleAdModal();
 });
