@@ -107,6 +107,7 @@ var createAds = function () {
 var renderPin = function (ad) {
   var pinElement = pinTemplate.cloneNode(true);
 
+  pinElement.classList.add('hidden');
   pinElement.style = 'left: ' + (ad.location.x - PIN_WIDTH / 2) + 'px; top: ' + (ad.location.y - PIN_HEIGHT) + 'px;';
   pinElement.querySelector('img').src = ad.author.avatar;
   pinElement.querySelector('img').alt = ad.offer.title;
@@ -155,9 +156,18 @@ var createAdContent = function (cardElement, ad) {
 };
 
 var renderAdCard = function () {
-  var сard = cardTemplate.cloneNode(true);
-  сard.classList.add('hidden');
-  map.insertBefore(сard, filtersContainer);
+  var cardElement = map.querySelector('.map__card');
+
+  if (!cardElement) {
+    cardElement = cardTemplate.cloneNode(true);
+    map.insertBefore(cardElement, filtersContainer);
+    cardElement.classList.add('hidden');
+  }
+
+  var popupClose = cardElement.querySelector('.popup__close');
+  popupClose.addEventListener('click', function () {
+    hideElement(cardElement);
+  });
 };
 
 var activateMap = function () {
@@ -176,6 +186,13 @@ var renderAdPins = function () {
   pinList.appendChild(renderPins(ads));
 };
 
+var showPins = function () {
+  var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
+  mapPins.forEach(function (elem) {
+    elem.classList.remove('hidden');
+  });
+};
+
 var addValueToAddressInput = function () {
   addressInput.value = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2)) + ',' + (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
 };
@@ -188,10 +205,9 @@ var showElement = function (target) {
   target.classList.remove('hidden');
 };
 
-var toggleAdModal = function () {
+var openAdModal = function () {
   var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
   var adCard = map.querySelector('.map__card');
-  var popupClose = adCard.querySelector('.popup__close');
 
   mapPins.forEach(function (elem, i) {
     elem.addEventListener('click', function () {
@@ -199,20 +215,16 @@ var toggleAdModal = function () {
       showElement(adCard);
     });
   });
-
-  popupClose.addEventListener('click', function () {
-    hideElement(adCard);
-  });
-
 };
 
 var ads = createAds();
+renderAdPins();
 
 pinMain.addEventListener('mouseup', function () {
   activateMap();
   activateForm();
-  renderAdPins();
+  showPins();
   renderAdCard();
   addValueToAddressInput();
-  toggleAdModal();
+  openAdModal();
 });
