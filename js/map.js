@@ -37,7 +37,7 @@ var filtersContainer = document.querySelector('.map__filters-container');
 var pinMain = document.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var adFields = adForm.querySelectorAll('fieldset');
-var AddressInput = adForm.querySelector('#address');
+var addressInput = adForm.querySelector('#address');
 
 var cardTemplate = document.querySelector('template')
   .content
@@ -192,7 +192,7 @@ var showPins = function () {
 var addValueToAddressInput = function () {
   var coordXOfMainPin = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2));
   var coordYOfMaimPin = (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
-  AddressInput.value = coordXOfMainPin + ',' + coordYOfMaimPin;
+  addressInput.value = coordXOfMainPin + ',' + coordYOfMaimPin;
 };
 
 var hideElement = function (target) {
