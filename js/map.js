@@ -37,7 +37,7 @@ var filtersContainer = document.querySelector('.map__filters-container');
 var pinMain = document.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var adFields = adForm.querySelectorAll('fieldset');
-var addressInput = adForm.querySelector('#address');
+var AddressInput = adForm.querySelector('#address');
 
 var cardTemplate = document.querySelector('template')
   .content
@@ -124,7 +124,7 @@ var renderPins = function (ads) {
   return fragment;
 };
 
-var createAdContent = function (cardElement, ad) {
+var fillInTheAdCard = function (cardElement, ad) {
 
   cardElement.querySelector('.popup__title').textContent = ad.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
@@ -162,12 +162,12 @@ var renderAdCard = function () {
     cardElement = cardTemplate.cloneNode(true);
     map.insertBefore(cardElement, filtersContainer);
     cardElement.classList.add('hidden');
-  }
 
-  var popupClose = cardElement.querySelector('.popup__close');
-  popupClose.addEventListener('click', function () {
-    hideElement(cardElement);
-  });
+    var popupClose = cardElement.querySelector('.popup__close');
+    popupClose.addEventListener('click', function () {
+      hideElement(cardElement);
+    });
+  }
 };
 
 var activateMap = function () {
@@ -177,13 +177,9 @@ var activateMap = function () {
 var activateForm = function () {
   adForm.classList.remove('ad-form--disabled');
 
-  for (var i = 0; i < adFields.length; i++) {
-    adFields[i].disabled = false;
-  }
-};
-
-var renderAdPins = function () {
-  pinList.appendChild(renderPins(ads));
+  adFields.forEach(function (elem) {
+    elem.disabled = false;
+  });
 };
 
 var showPins = function () {
@@ -194,7 +190,9 @@ var showPins = function () {
 };
 
 var addValueToAddressInput = function () {
-  addressInput.value = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2)) + ',' + (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
+  var coordXOfMainPin = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2));
+  var coordYOfMaimPin = (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
+  AddressInput.value = coordXOfMainPin + ',' + coordYOfMaimPin;
 };
 
 var hideElement = function (target) {
@@ -211,14 +209,14 @@ var openAdModal = function () {
 
   mapPins.forEach(function (elem, i) {
     elem.addEventListener('click', function () {
-      createAdContent(adCard, ads[i]);
+      fillInTheAdCard(adCard, ads[i]);
       showElement(adCard);
     });
   });
 };
 
 var ads = createAds();
-renderAdPins();
+pinList.appendChild(renderPins(ads));
 
 pinMain.addEventListener('mouseup', function () {
   activateMap();
