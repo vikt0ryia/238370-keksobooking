@@ -91,7 +91,7 @@
       <h2 class="notice__title">Ваше объявление</h2>
 
       <form class="ad-form ad-form--disabled" method="post" enctype="multipart/form-data" autocomplete="off">
-        <fieldset class="ad-form-header">
+        <fieldset class="ad-form-header" disabled>
           <legend class="ad-form-header__title">Ваша фотография (для карты)</legend>
           <div class="ad-form-header__upload">
             <div class="ad-form-header__preview">
@@ -105,17 +105,17 @@
           </div>
         </fieldset>
 
-        <fieldset class="ad-form__element ad-form__element--wide">
+        <fieldset class="ad-form__element ad-form__element--wide" disabled>
           <label class="ad-form__label" for="title">Заголовок объявления</label>
           <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио">
         </fieldset>
 
-        <fieldset class="ad-form__element ad-form__element--wide">
+        <fieldset class="ad-form__element ad-form__element--wide" disabled>
           <label class="ad-form__label" for="address">Адрес</label>
           <input id="address" name="address" type="text">
         </fieldset>
 
-        <fieldset class="ad-form__element">
+        <fieldset class="ad-form__element" disabled>
           <label class="ad-form__label" for="type">Тип жилья</label>
           <select id="type" name="type">
             <option value="bungalo">Бунгало</option>
@@ -125,12 +125,12 @@
           </select>
         </fieldset>
 
-        <fieldset class="ad-form__element">
+        <fieldset class="ad-form__element" disabled>
           <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
           <input id="price" name="price" type="number" placeholder="5000">
         </fieldset>
 
-        <fieldset class="ad-form__element ad-form__element--time">
+        <fieldset class="ad-form__element ad-form__element--time" disabled>
           <label class="ad-form__label" for="timein">Время заезда и выезда</label>
           <select id="timein" name="timein">
             <option value="12:00" selected>После 12</option>
@@ -144,7 +144,7 @@
           </select>
         </fieldset>
 
-        <fieldset class="ad-form__element">
+        <fieldset class="ad-form__element" disabled>
           <label class="ad-form__label" for="room_number">Кол-во комнат</label>
           <select id="room_number" name="rooms">
             <option value="1" selected>1 комната</option>
@@ -154,7 +154,7 @@
           </select>
         </fieldset>
 
-        <fieldset class="ad-form__element">
+        <fieldset class="ad-form__element" disabled>
           <label class="ad-form__label" for="capacity">Количество мест</label>
           <select id="capacity" name="capacity">
             <option value="3" selected>для 3 гостей</option>
@@ -164,7 +164,7 @@
           </select>
         </fieldset>
 
-        <fieldset class="ad-form__element ad-form__element--wide features">
+        <fieldset class="ad-form__element ad-form__element--wide features" disabled>
           <legend>Удобства: Wi-Fi, кухня, парковка, стиралка, лифт, кондиционер</legend>
 
           <input type="checkbox" name="features" value="wifi" id="feature-wifi" class="feature__checkbox visually-hidden">
@@ -186,12 +186,12 @@
           <label class="feature feature--conditioner" for="feature-conditioner">Кондиционер</label>
         </fieldset>
 
-        <fieldset class="ad-form__element ad-form__element--wide">
+        <fieldset class="ad-form__element ad-form__element--wide" disabled>
           <label class="ad-form__label" for="description">Описание (не обязательно)</label>
           <textarea id="description" name="description" placeholder="Здесь расскажите о том, какое ваше жилье замечательное и вообще"></textarea>
         </fieldset>
 
-        <fieldset class="ad-form__element ad-form__element--wide">
+        <fieldset class="ad-form__element ad-form__element--wide" disabled>
           <label class="ad-form__label">Фотографии жилья</label>
           <div class="ad-form__photo-container">
             <div class="ad-form__upload">
@@ -202,7 +202,7 @@
           </div>
         </fieldset>
 
-        <fieldset class="ad-form__element ad-form__element--submit">
+        <fieldset class="ad-form__element ad-form__element--submit" disabled>
           <button class="ad-form__submit" type="submit">Опубликовать</button>
           или <button class="ad-form__reset" type="reset">очистить</button>
         </fieldset>

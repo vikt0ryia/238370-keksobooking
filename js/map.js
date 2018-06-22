@@ -9,9 +9,9 @@ var AD_TITLES = ['Большая уютная квартира',
   'Уютное бунгало далеко от моря',
   'Неуютное бунгало по колено в воде'];
 
-var TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var AD_TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var AD_TIMES = ['12:00', '13:00', '14:00'];
-var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var AD_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var AD_PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
@@ -20,6 +20,9 @@ var AD_QUANTITY = 8;
 
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+
+var PIN_MAIN_WIDTH = 65;
+var PIN_MAIN_HEIGHT = 85;
 
 var HOUSE_TYPES = {
   house: 'Дом',
@@ -31,6 +34,10 @@ var HOUSE_TYPES = {
 var map = document.querySelector('.map');
 var pinList = document.querySelector('.map__pins');
 var filtersContainer = document.querySelector('.map__filters-container');
+var pinMain = document.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var adFields = adForm.querySelectorAll('fieldset');
+var addressInput = adForm.querySelector('#address');
 
 var cardTemplate = document.querySelector('template')
   .content
@@ -74,12 +81,12 @@ var createAd = function (i) {
       title: AD_TITLES[i],
       address: x + ', ' + y,
       price: getRandomInRange(1000, 1000000),
-      type: getRandomValueFromArray(TYPES),
+      type: getRandomValueFromArray(AD_TYPES),
       rooms: getRandomInRange(1, 5),
       guests: getRandomInRange(1, 5),
       checkin: getRandomValueFromArray(AD_TIMES),
       checkout: getRandomValueFromArray(AD_TIMES),
-      features: getRandomValuesFromArray(FEATURES),
+      features: getRandomValuesFromArray(AD_FEATURES),
       description: '',
       photos: shuffleArray(AD_PHOTOS)
     },
@@ -100,6 +107,7 @@ var createAds = function () {
 var renderPin = function (ad) {
   var pinElement = pinTemplate.cloneNode(true);
 
+  pinElement.classList.add('hidden');
   pinElement.style = 'left: ' + (ad.location.x - PIN_WIDTH / 2) + 'px; top: ' + (ad.location.y - PIN_HEIGHT) + 'px;';
   pinElement.querySelector('img').src = ad.author.avatar;
   pinElement.querySelector('img').alt = ad.offer.title;
@@ -116,8 +124,7 @@ var renderPins = function (ads) {
   return fragment;
 };
 
-var renderCard = function (ad) {
-  var cardElement = cardTemplate.cloneNode(true);
+var fillInTheAdCard = function (cardElement, ad) {
 
   cardElement.querySelector('.popup__title').textContent = ad.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = ad.offer.address;
@@ -136,7 +143,7 @@ var renderCard = function (ad) {
 
   var photosContainer = cardElement.querySelector('.popup__photos');
   var photoTemplate = photosContainer.querySelector('.popup__photo');
-  photosContainer.removeChild(photoTemplate);
+  photosContainer.innerHTML = '';
   for (var l = 0; l < ad.offer.photos.length; l++) {
     var photoElement = photoTemplate.cloneNode(true);
     photoElement.src = ad.offer.photos[l];
@@ -148,11 +155,74 @@ var renderCard = function (ad) {
   return cardElement;
 };
 
-var ads = createAds();
+var renderAdCard = function () {
+  var cardElement = map.querySelector('.map__card');
 
+  if (!cardElement) {
+    cardElement = cardTemplate.cloneNode(true);
+    map.insertBefore(cardElement, filtersContainer);
+    cardElement.classList.add('hidden');
+
+    var popupClose = cardElement.querySelector('.popup__close');
+    popupClose.addEventListener('click', function () {
+      hideElement(cardElement);
+    });
+  }
+};
+
+var activateMap = function () {
+  map.classList.remove('map--faded');
+};
+
+var activateForm = function () {
+  adForm.classList.remove('ad-form--disabled');
+
+  adFields.forEach(function (elem) {
+    elem.disabled = false;
+  });
+};
+
+var showPins = function () {
+  var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
+  mapPins.forEach(function (elem) {
+    elem.classList.remove('hidden');
+  });
+};
+
+var addValueToAddressInput = function () {
+  var coordXOfMainPin = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2));
+  var coordYOfMaimPin = (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
+  addressInput.value = coordXOfMainPin + ',' + coordYOfMaimPin;
+};
+
+var hideElement = function (target) {
+  target.classList.add('hidden');
+};
+
+var showElement = function (target) {
+  target.classList.remove('hidden');
+};
+
+var openAdModal = function () {
+  var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
+  var adCard = map.querySelector('.map__card');
+
+  mapPins.forEach(function (elem, i) {
+    elem.addEventListener('click', function () {
+      fillInTheAdCard(adCard, ads[i]);
+      showElement(adCard);
+    });
+  });
+};
+
+var ads = createAds();
 pinList.appendChild(renderPins(ads));
 
-var cardItem = renderCard(ads[0]);
-map.insertBefore(cardItem, filtersContainer);
-
-map.classList.remove('map--faded');
+pinMain.addEventListener('mouseup', function () {
+  activateMap();
+  activateForm();
+  showPins();
+  renderAdCard();
+  addValueToAddressInput();
+  openAdModal();
+});
