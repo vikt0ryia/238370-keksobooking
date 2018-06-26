@@ -195,15 +195,17 @@ var showElement = function (target) {
   target.classList.remove('hidden');
 };
 
-var deactivateMap = function (bool) {
-  map.classList.toggle('map--faded', bool);
+var makeMapOfFaded = function (status) {
+  status = status || false;
+  map.classList.toggle('map--faded', status);
 };
 
-var deactivateForm = function (bool) {
-  adForm.classList.toggle('ad-form--disabled', bool);
+var blockForm = function (status) {
+  status = status || false;
+  adForm.classList.toggle('ad-form--disabled', status);
 
   adFields.forEach(function (elem) {
-    elem.disabled = bool;
+    elem.disabled = status;
   });
 };
 
@@ -213,7 +215,7 @@ var addValueToAddressInput = function () {
   addressInput.value = coordXOfMainPin + ',' + coordYOfMaimPin;
 };
 
-var cleanMapPins = function () {
+var removeMapPins = function () {
   var mapPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
   mapPins.forEach(function (item) {
     pinList.removeChild(item);
@@ -226,6 +228,7 @@ var openAdModal = function () {
 
   mapPins.forEach(function (elem, i) {
     elem.addEventListener('click', function () {
+      closePopup();
       elem.classList.add('map__pin--active');
       fillInTheAdCard(adCard, ads[i]);
       showElement(adCard);
@@ -240,6 +243,11 @@ var closePopup = function () {
   if (card) {
     hideElement(card);
     document.removeEventListener('keydown', onPopupEscPress);
+
+    var activePin = pinList.querySelector('.map__pin--active');
+    if (activePin) {
+      activePin.classList.remove('map__pin--active');
+    }
   }
 };
 
@@ -249,20 +257,6 @@ var onPopupEscPress = function (evt) {
   }
 };
 
-// var closeAdModal = function () {
-//   var cardElement = map.querySelector('.map__card');
-//
-//   if (cardElement) {
-//     var popupClose = cardElement.querySelector('.popup__close');
-//
-//     popupClose.addEventListener('click', function () {
-//       hideElement(cardElement);
-//       var pinActiv = map.querySelector('.map__pin--active');
-//       pinActiv.classList.remove('map__pin--active');
-//     });
-//   }
-// };
-
 var renderAdPins = function () {
   ads = createAds();
   pinList.appendChild(renderPins(ads));
@@ -271,15 +265,14 @@ var renderAdPins = function () {
 var ads = [];
 
 pinMain.addEventListener('mouseup', function () {
-  cleanMapPins();
+  removeMapPins();
   closePopup();
-  deactivateMap(false);
-  deactivateForm(false);
+  makeMapOfFaded(false);
+  blockForm(false);
   renderAdPins();
   renderAdCard();
   addValueToAddressInput();
   openAdModal();
-  // closeAdModal();
 });
 
 // module4-task2 -------------------------------------
@@ -335,7 +328,7 @@ var syncRoomAndCapacity = function () {
   }
 };
 
-capacitySelect.addEventListener('change', syncRoomAndCapacity);
+roomNumberSelect.addEventListener('change', syncRoomAndCapacity);
 capacitySelect.addEventListener('change', syncRoomAndCapacity);
 
 
@@ -349,9 +342,9 @@ var onResetBtnClick = function () {
   adForm.reset();
   removeFieldsInvalidity();
   closePopup();
-  cleanMapPins();
-  deactivateForm(true);
-  deactivateMap(true);
+  removeMapPins();
+  blockForm(true);
+  makeMapOfFaded(true);
 };
 
 var onSubmitBtnClick = function () {
