@@ -1216,3 +1216,9 @@ fieldset {
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
 }
+
+.ad-form__element input.invalid,
+.ad-form__element select.invalid,
+.ad-form__element textarea.invalid {
+  border: 1px dashed red;
+}

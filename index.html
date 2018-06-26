@@ -90,7 +90,11 @@
     <section class="notice">
       <h2 class="notice__title">Ваше объявление</h2>
 
-      <form class="ad-form ad-form--disabled" method="post" enctype="multipart/form-data" autocomplete="off">
+      <form class="ad-form ad-form--disabled"
+            method="post"
+            enctype="multipart/form-data"
+            action="https://js.dump.academy/keksobooking"
+            autocomplete="off">
         <fieldset class="ad-form-header" disabled>
           <legend class="ad-form-header__title">Ваша фотография (для карты)</legend>
           <div class="ad-form-header__upload">
@@ -107,12 +111,17 @@
 
         <fieldset class="ad-form__element ad-form__element--wide" disabled>
           <label class="ad-form__label" for="title">Заголовок объявления</label>
-          <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио">
+          <input id="title"
+                 name="title"
+                 type="text"
+                 minlength="30" maxlength="100"
+                 placeholder="Милая, уютная квартирка в центре Токио"
+                 required>
         </fieldset>
 
         <fieldset class="ad-form__element ad-form__element--wide" disabled>
           <label class="ad-form__label" for="address">Адрес</label>
-          <input id="address" name="address" type="text">
+          <input id="address" name="address" type="text" readonly>
         </fieldset>
 
         <fieldset class="ad-form__element" disabled>
@@ -127,7 +136,12 @@
 
         <fieldset class="ad-form__element" disabled>
           <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-          <input id="price" name="price" type="number" placeholder="5000">
+          <input id="price"
+                 name="price"
+                 type="number"
+                 min="0" max = "1000000"
+                 placeholder="1000"
+                 required>
         </fieldset>
 
         <fieldset class="ad-form__element ad-form__element--time" disabled>
@@ -157,9 +171,9 @@
         <fieldset class="ad-form__element" disabled>
           <label class="ad-form__label" for="capacity">Количество мест</label>
           <select id="capacity" name="capacity">
-            <option value="3" selected>для 3 гостей</option>
+            <option value="3">для 3 гостей</option>
             <option value="2">для 2 гостей</option>
-            <option value="1">для 1 гостя</option>
+            <option value="1" selected>для 1 гостя</option>
             <option value="0">не для гостей</option>
           </select>
         </fieldset>
