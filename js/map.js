@@ -129,6 +129,7 @@ var createAds = function () {
 var renderPin = function (ad) {
   var pinElement = pinTemplate.cloneNode(true);
 
+  pinElement.classList.add('hidden');
   pinElement.style = 'left: ' + (ad.location.x - PIN_WIDTH / 2) + 'px; top: ' + (ad.location.y - PIN_HEIGHT) + 'px;';
   pinElement.querySelector('img').src = ad.author.avatar;
   pinElement.querySelector('img').alt = ad.offer.title;
@@ -203,6 +204,14 @@ var showElement = function (target) {
   target.classList.remove('hidden');
 };
 
+var hidePins = function (status) {
+  status = status || false;
+  var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
+  mapPins.forEach(function (elem) {
+    elem.classList.toggle('hidden', status);
+  });
+};
+
 var makeMapOfFaded = function (status) {
   status = status || false;
   map.classList.toggle('map--faded', status);
@@ -221,13 +230,6 @@ var addValueToAddressInput = function () {
   var coordXOfMainPin = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2));
   var coordYOfMaimPin = (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
   addressInput.value = coordXOfMainPin + ', ' + coordYOfMaimPin;
-};
-
-var removeMapPins = function () {
-  var mapPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
-  mapPins.forEach(function (item) {
-    pinList.removeChild(item);
-  });
 };
 
 var openAdModal = function () {
@@ -265,12 +267,8 @@ var onPopupEscPress = function (evt) {
   }
 };
 
-var renderAdPins = function () {
-  ads = createAds();
-  pinList.appendChild(renderPins(ads));
-};
-
-var ads = [];
+var ads = createAds();
+pinList.appendChild(renderPins(ads));
 
 addValueToAddressInput();
 
@@ -295,11 +293,6 @@ pinMain.addEventListener('mousedown', function (evt) {
       y: moveEvt.clientY
     };
 
-    var pinPosition = {
-      x: pinMain.offsetLeft - shift.x,
-      y: pinMain.offsetTop - shift.y
-    };
-
     var bordersOfPinPosition = {
       minX: 0,
       maxX: map.offsetWidth - PIN_MAIN_WIDTH,
@@ -307,13 +300,13 @@ pinMain.addEventListener('mousedown', function (evt) {
       maxY: MAX_VALUE_Y - PIN_MAIN_HEIGHT
     };
 
-    pinPosition.x = (pinPosition.x < bordersOfPinPosition.minX) ? bordersOfPinPosition.minX : pinPosition.x;
-    pinPosition.x = (pinPosition.x > bordersOfPinPosition.maxX) ? bordersOfPinPosition.maxX : pinPosition.x;
-    pinPosition.y = (pinPosition.y < bordersOfPinPosition.minY) ? bordersOfPinPosition.minY : pinPosition.y;
-    pinPosition.y = (pinPosition.y > bordersOfPinPosition.maxY) ? bordersOfPinPosition.maxY : pinPosition.y;
-
-    pinMain.style.top = pinPosition.y + 'px';
-    pinMain.style.left = pinPosition.x + 'px';
+    if (pinMain.offsetLeft - shift.x >= bordersOfPinPosition.minX &&
+        pinMain.offsetLeft - shift.x <= bordersOfPinPosition.maxX &&
+        pinMain.offsetTop - shift.y >= bordersOfPinPosition.minY &&
+        pinMain.offsetTop - shift.y <= bordersOfPinPosition.maxY) {
+      pinMain.style.left = (pinMain.offsetLeft - shift.x) + 'px';
+      pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
+    }
 
     addValueToAddressInput();
   };
@@ -321,11 +314,10 @@ pinMain.addEventListener('mousedown', function (evt) {
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
 
-    removeMapPins();
     closePopup();
     makeMapOfFaded(false);
     blockForm(false);
-    renderAdPins();
+    hidePins(false);
     renderAdCard();
     addValueToAddressInput();
     openAdModal();
@@ -411,7 +403,7 @@ var onResetBtnClick = function () {
   adForm.reset();
   removeFieldsInvalidity();
   closePopup();
-  removeMapPins();
+  hidePins(true);
   blockForm(true);
   makeMapOfFaded(true);
   resetCoordOfMainPin();
