@@ -43,6 +43,14 @@ var HOUSE_TYPES = {
   }
 };
 
+var MIN_VALUE_Y = 130;
+var MAX_VALUE_Y = 630;
+
+var START_PIN_POSITION = {
+  x: 570,
+  y: 375
+};
+
 var ESC_KEYCODE = 27;
 
 var map = document.querySelector('.map');
@@ -212,7 +220,7 @@ var blockForm = function (status) {
 var addValueToAddressInput = function () {
   var coordXOfMainPin = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2));
   var coordYOfMaimPin = (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
-  addressInput.value = coordXOfMainPin + ',' + coordYOfMaimPin;
+  addressInput.value = coordXOfMainPin + ', ' + coordYOfMaimPin;
 };
 
 var removeMapPins = function () {
@@ -264,15 +272,70 @@ var renderAdPins = function () {
 
 var ads = [];
 
-pinMain.addEventListener('mouseup', function () {
-  removeMapPins();
-  closePopup();
-  makeMapOfFaded(false);
-  blockForm(false);
-  renderAdPins();
-  renderAdCard();
-  addValueToAddressInput();
-  openAdModal();
+addValueToAddressInput();
+
+pinMain.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    var pinPosition = {
+      x: pinMain.offsetLeft - shift.x,
+      y: pinMain.offsetTop - shift.y
+    };
+
+    var bordersOfPinPosition = {
+      minX: 0,
+      maxX: map.offsetWidth - PIN_MAIN_WIDTH,
+      minY: MIN_VALUE_Y - PIN_MAIN_HEIGHT,
+      maxY: MAX_VALUE_Y - PIN_MAIN_HEIGHT
+    };
+
+    pinPosition.x = (pinPosition.x < bordersOfPinPosition.minX) ? bordersOfPinPosition.minX : pinPosition.x;
+    pinPosition.x = (pinPosition.x > bordersOfPinPosition.maxX) ? bordersOfPinPosition.maxX : pinPosition.x;
+    pinPosition.y = (pinPosition.y < bordersOfPinPosition.minY) ? bordersOfPinPosition.minY : pinPosition.y;
+    pinPosition.y = (pinPosition.y > bordersOfPinPosition.maxY) ? bordersOfPinPosition.maxY : pinPosition.y;
+
+    pinMain.style.top = pinPosition.y + 'px';
+    pinMain.style.left = pinPosition.x + 'px';
+
+    addValueToAddressInput();
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    removeMapPins();
+    closePopup();
+    makeMapOfFaded(false);
+    blockForm(false);
+    renderAdPins();
+    renderAdCard();
+    addValueToAddressInput();
+    openAdModal();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
 
 // module4-task2 -------------------------------------
@@ -338,6 +401,12 @@ var removeFieldsInvalidity = function () {
   });
 };
 
+var resetCoordOfMainPin = function () {
+  pinMain.style.left = START_PIN_POSITION.x + 'px';
+  pinMain.style.top = START_PIN_POSITION.y + 'px';
+  addValueToAddressInput();
+};
+
 var onResetBtnClick = function () {
   adForm.reset();
   removeFieldsInvalidity();
@@ -345,6 +414,7 @@ var onResetBtnClick = function () {
   removeMapPins();
   blockForm(true);
   makeMapOfFaded(true);
+  resetCoordOfMainPin();
 };
 
 var onSubmitBtnClick = function () {
