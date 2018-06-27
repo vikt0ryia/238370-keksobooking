@@ -188,8 +188,8 @@ var renderAdCard = function () {
     var popupClose = cardElement.querySelector('.popup__close');
     popupClose.addEventListener('click', function () {
       hideElement(cardElement);
-      var pinActiv = map.querySelector('.map__pin--active');
-      pinActiv.classList.remove('map__pin--active');
+      var pinActive = map.querySelector('.map__pin--active');
+      pinActive.classList.remove('map__pin--active');
       document.removeEventListener('keydown', onPopupEscPress);
     });
   }
