@@ -314,7 +314,6 @@ pinMain.addEventListener('mousedown', function (evt) {
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
 
-    closePopup();
     makeMapOfFaded(false);
     blockForm(false);
     hidePins(false);
