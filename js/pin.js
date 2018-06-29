@@ -31,11 +31,20 @@
     return fragment;
   };
 
+  var hidePins = function (status) {
+    status = status || false;
+    var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
+    mapPins.forEach(function (elem) {
+      elem.classList.toggle('hidden', status);
+    });
+  };
+
   pinList.appendChild(renderPins(window.data.ads));
 
   window.pin = {
     pinList: pinList,
-    renderPins: renderPins
+    renderPins: renderPins,
+    hidePins: hidePins
   };
 
 })();

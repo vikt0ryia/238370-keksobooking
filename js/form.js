@@ -6,6 +6,8 @@
     y: 375
   };
 
+  var adFields = window.map.adForm.querySelectorAll('fieldset');
+
   var typeSelect = window.map.adForm.querySelector('#type');
   var priceInput = window.map.adForm.querySelector('#price');
 
@@ -18,6 +20,14 @@
   var submitBtn = window.map.adForm.querySelector('.ad-form__submit');
   var resetBtn = window.map.adForm.querySelector('.ad-form__reset');
 
+  var blockForm = function (status) {
+    status = status || false;
+    window.map.adForm.classList.toggle('ad-form--disabled', status);
+
+    adFields.forEach(function (elem) {
+      elem.disabled = status;
+    });
+  };
 
   var changeElementAttributes = function (elem, value) {
     elem.setAttribute('min', value);
@@ -77,8 +87,8 @@
     window.map.adForm.reset();
     removeFieldsInvalidity();
     window.card.closePopup();
-    window.map.hidePins(true);
-    window.map.blockForm(true);
+    window.pin.hidePins(true);
+    blockForm(true);
     window.map.makeMapOfFaded(true);
     resetCoordOfMainPin();
   };
@@ -98,5 +108,9 @@
   submitBtn.addEventListener('click', onSubmitBtnClick);
 
   resetBtn.addEventListener('click', onResetBtnClick);
+
+  window.form = {
+    blockForm: blockForm
+  };
 
 })();

@@ -7,31 +7,12 @@
 
   var map = document.querySelector('.map');
   var pinMain = document.querySelector('.map__pin--main');
-
   var adForm = document.querySelector('.ad-form');
-  var adFields = adForm.querySelectorAll('fieldset');
   var addressInput = adForm.querySelector('#address');
-
-  var hidePins = function (status) {
-    status = status || false;
-    var mapPins = window.pin.pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
-    mapPins.forEach(function (elem) {
-      elem.classList.toggle('hidden', status);
-    });
-  };
 
   var makeMapOfFaded = function (status) {
     status = status || false;
     map.classList.toggle('map--faded', status);
-  };
-
-  var blockForm = function (status) {
-    status = status || false;
-    adForm.classList.toggle('ad-form--disabled', status);
-
-    adFields.forEach(function (elem) {
-      elem.disabled = status;
-    });
   };
 
   var addValueToAddressInput = function () {
@@ -85,8 +66,8 @@
       upEvt.preventDefault();
 
       makeMapOfFaded(false);
-      blockForm(false);
-      hidePins(false);
+      window.form.blockForm(false);
+      window.pin.hidePins(false);
       window.card.renderAdCard();
       addValueToAddressInput();
       window.card.openAdModal();
@@ -103,8 +84,6 @@
     map: map,
     pinMain: pinMain,
     adForm: adForm,
-    hidePins: hidePins,
-    blockForm: blockForm,
     makeMapOfFaded: makeMapOfFaded,
     addValueToAddressInput: addValueToAddressInput
   };
