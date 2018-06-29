@@ -33,9 +33,12 @@
   var MIN_VALUE_X = 300;
   var MAX_VALUE_X = 900;
 
+  var MIN_VALUE_Y = 130;
+  var MAX_VALUE_Y = 630;
+
   var createAd = function (i) {
     var x = window.utils.getRandomInRange(MIN_VALUE_X, MAX_VALUE_X);
-    var y = window.utils.getRandomInRange(130, 630);
+    var y = window.utils.getRandomInRange(MIN_VALUE_Y, MAX_VALUE_Y);
 
     var ad = {
       author: {
@@ -71,6 +74,8 @@
   var ads = createAds();
 
   window.data = {
+    minValueY: MIN_VALUE_Y,
+    maxValueY: MAX_VALUE_Y,
     ads: ads
   };
 

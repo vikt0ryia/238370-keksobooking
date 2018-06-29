@@ -99,8 +99,4 @@
 
   resetBtn.addEventListener('click', onResetBtnClick);
 
-  // window.form = {
-  //   adForm: adForm
-  // };
-
 })();

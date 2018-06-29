@@ -96,10 +96,11 @@
         elem.classList.add('map__pin--active');
         fillInTheAdCard(adCard, window.data.ads[i]);
         showElement(adCard);
+
+        document.addEventListener('keydown', onPopupEscPress);
       });
     });
 
-    document.addEventListener('keydown', onPopupEscPress);
   };
 
   var closePopup = function () {
