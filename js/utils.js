@@ -2,6 +2,11 @@
 
 (function () {
 
+  var getEscCode = function () {
+    var ESC_KEYCODE = 27;
+    return ESC_KEYCODE;
+  };
+
   var getRandomInRange = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
@@ -25,6 +30,7 @@
   };
 
   window.utils = {
+    getEscCode: getEscCode,
     getRandomInRange: getRandomInRange,
     getRandomValueFromArray: getRandomValueFromArray,
     shuffleArray: shuffleArray,

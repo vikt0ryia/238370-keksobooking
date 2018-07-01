@@ -93,16 +93,26 @@
     resetCoordOfMainPin();
   };
 
-  var onSubmitBtnClick = function () {
-    var fields = window.map.adForm.querySelectorAll('input, select, textarea');
+  var onSuccess = function () {
+    window.response.showResponse('Ваше объявление<br>успешно размещено!');
+  };
 
-    removeFieldsInvalidity();
+  var onSubmitBtnClick = function (evt) {
+    evt.preventDefault();
+    if (window.map.adForm.checkValidity()) {
+      window.backend.sendData(new FormData(window.map.adForm), onSuccess, window.pin.onError);
+      onResetBtnClick();
+    } else {
+      var fields = window.map.adForm.querySelectorAll('input, select, textarea');
 
-    fields.forEach(function (item) {
-      if (!item.validity.valid) {
-        item.classList.add('invalid');
-      }
-    });
+      removeFieldsInvalidity();
+
+      fields.forEach(function (item) {
+        if (!item.validity.valid) {
+          item.classList.add('invalid');
+        }
+      });
+    }
   };
 
   submitBtn.addEventListener('click', onSubmitBtnClick);

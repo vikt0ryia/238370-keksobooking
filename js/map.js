@@ -5,6 +5,9 @@
   var PIN_MAIN_WIDTH = 65;
   var PIN_MAIN_HEIGHT = 85;
 
+  var MIN_VALUE_Y = 130;
+  var MAX_VALUE_Y = 630;
+
   var map = document.querySelector('.map');
   var pinMain = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
@@ -47,8 +50,8 @@
       var bordersOfPinPosition = {
         minX: 0,
         maxX: map.offsetWidth - PIN_MAIN_WIDTH,
-        minY: window.data.minValueY - PIN_MAIN_HEIGHT,
-        maxY: window.data.maxValueY - PIN_MAIN_HEIGHT
+        minY: MIN_VALUE_Y - PIN_MAIN_HEIGHT,
+        maxY: MAX_VALUE_Y - PIN_MAIN_HEIGHT
       };
 
       if (pinMain.offsetLeft - shift.x >= bordersOfPinPosition.minX &&

@@ -28,7 +28,8 @@
     for (var i = 0; i < ads.length; i++) {
       fragment.appendChild(renderPin(ads[i]));
     }
-    return fragment;
+
+    pinList.appendChild(fragment);
   };
 
   var hidePins = function (status) {
@@ -39,12 +40,17 @@
     });
   };
 
-  pinList.appendChild(renderPins(window.data.ads));
+  var onError = function (message) {
+    window.response.showResponse(message);
+  };
+
+  window.backend.getData(renderPins, onError);
 
   window.pin = {
     pinList: pinList,
     renderPins: renderPins,
-    hidePins: hidePins
+    hidePins: hidePins,
+    onError: onError
   };
 
 })();

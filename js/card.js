@@ -21,8 +21,6 @@
     }
   };
 
-  var ESC_KEYCODE = 27;
-
   var cardTemplate = document.querySelector('template')
     .content
     .querySelector('.map__card');
@@ -86,6 +84,12 @@
     target.classList.remove('hidden');
   };
 
+  var uploadData = function (array) {
+    window.card.data = array;
+  };
+
+  window.backend.getData(uploadData, window.pin.onError);
+
   var openAdModal = function () {
     var mapPins = window.pin.pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
     var adCard = window.map.map.querySelector('.map__card');
@@ -94,7 +98,7 @@
       elem.addEventListener('click', function () {
         closePopup();
         elem.classList.add('map__pin--active');
-        fillInTheAdCard(adCard, window.data.ads[i]);
+        fillInTheAdCard(adCard, window.card.data[i]);
         showElement(adCard);
 
         document.addEventListener('keydown', onPopupEscPress);
@@ -117,7 +121,7 @@
   };
 
   var onPopupEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
+    if (evt.keyCode === window.utils.getEscCode()) {
       closePopup();
     }
   };
@@ -126,7 +130,9 @@
     houseTypes: HOUSE_TYPES,
     renderAdCard: renderAdCard,
     openAdModal: openAdModal,
-    closePopup: closePopup
+    closePopup: closePopup,
+    hideElement: hideElement,
+    showElement: showElement
   };
 
 })();
