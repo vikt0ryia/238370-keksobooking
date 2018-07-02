@@ -40,7 +40,7 @@
   };
 
   window.response = {
-    escKeycode: ESC_KEYCODE,
+    ESC_KEYCODE: ESC_KEYCODE,
     showResponse: showResponse
   };
 

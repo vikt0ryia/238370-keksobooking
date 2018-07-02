@@ -28,7 +28,6 @@
 
   var uploadData = function (array) {
     window.map.data = array;
-    return window.map.data;
   };
 
   var onError = function (message) {

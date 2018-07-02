@@ -110,7 +110,7 @@
   };
 
   var onPopupEscPress = function (evt) {
-    if (evt.keyCode === window.response.escKeycode) {
+    if (evt.keyCode === window.response.ESC_KEYCODE) {
       closePopup();
     }
   };
