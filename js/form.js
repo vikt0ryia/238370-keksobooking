@@ -87,20 +87,25 @@
     window.map.adForm.reset();
     removeFieldsInvalidity();
     window.card.closePopup();
-    window.pin.hidePins(true);
+    window.pin.removeMapPins();
     blockForm(true);
     window.map.makeMapOfFaded(true);
     resetCoordOfMainPin();
+    window.map.allowToRenderingPins = true;
   };
 
   var onSuccess = function () {
-    window.response.showResponse('Ваше объявление<br>успешно размещено!');
+    window.response.showResponse('Ваше объявление успешно размещено!');
+  };
+
+  var onError = function (message) {
+    window.response.showResponse(message);
   };
 
   var onSubmitBtnClick = function (evt) {
     evt.preventDefault();
     if (window.map.adForm.checkValidity()) {
-      window.backend.sendData(new FormData(window.map.adForm), onSuccess, window.pin.onError);
+      window.backend.sendData(new FormData(window.map.adForm), onSuccess, onError);
       onResetBtnClick();
     } else {
       var fields = window.map.adForm.querySelectorAll('input, select, textarea');

@@ -2,11 +2,6 @@
 
 (function () {
 
-  var getEscCode = function () {
-    var ESC_KEYCODE = 27;
-    return ESC_KEYCODE;
-  };
-
   var getRandomInRange = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
@@ -29,12 +24,21 @@
     return newArray;
   };
 
+  var hideElement = function (target) {
+    target.classList.add('hidden');
+  };
+
+  var showElement = function (target) {
+    target.classList.remove('hidden');
+  };
+
   window.utils = {
-    getEscCode: getEscCode,
     getRandomInRange: getRandomInRange,
     getRandomValueFromArray: getRandomValueFromArray,
     shuffleArray: shuffleArray,
-    getRandomValuesFromArray: getRandomValuesFromArray
+    getRandomValuesFromArray: getRandomValuesFromArray,
+    hideElement: hideElement,
+    showElement: showElement
   };
 
 })();

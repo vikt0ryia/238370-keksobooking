@@ -26,6 +26,17 @@
 
   addValueToAddressInput();
 
+  var uploadData = function (array) {
+    window.map.data = array;
+    return window.map.data;
+  };
+
+  var onError = function (message) {
+    window.response.showResponse(message);
+  };
+
+  window.backend.getData(uploadData, onError);
+
   pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
@@ -70,10 +81,15 @@
 
       makeMapOfFaded(false);
       window.form.blockForm(false);
-      window.pin.hidePins(false);
+
+      if (window.map.allowToRenderingPins) {
+        window.pin.renderPins(window.map.data);
+      }
+
       window.card.renderAdCard();
       addValueToAddressInput();
       window.card.openAdModal();
+      window.map.allowToRenderingPins = false;
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -84,6 +100,7 @@
   });
 
   window.map = {
+    allowToRenderingPins: true,
     map: map,
     pinMain: pinMain,
     adForm: adForm,

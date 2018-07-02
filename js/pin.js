@@ -14,7 +14,6 @@
   var renderPin = function (ad) {
     var pinElement = pinTemplate.cloneNode(true);
 
-    pinElement.classList.add('hidden');
     pinElement.style = 'left: ' + (ad.location.x - PIN_WIDTH / 2) + 'px; top: ' + (ad.location.y - PIN_HEIGHT) + 'px;';
     pinElement.querySelector('img').src = ad.author.avatar;
     pinElement.querySelector('img').alt = ad.offer.title;
@@ -32,25 +31,17 @@
     pinList.appendChild(fragment);
   };
 
-  var hidePins = function (status) {
-    status = status || false;
-    var mapPins = pinList.querySelectorAll('.map__pins button:not(.map__pin--main)');
-    mapPins.forEach(function (elem) {
-      elem.classList.toggle('hidden', status);
+  var removeMapPins = function () {
+    var mapPins = document.querySelectorAll('.map__pins button:not(.map__pin--main)');
+    mapPins.forEach(function (item) {
+      pinList.removeChild(item);
     });
   };
-
-  var onError = function (message) {
-    window.response.showResponse(message);
-  };
-
-  window.backend.getData(renderPins, onError);
 
   window.pin = {
     pinList: pinList,
     renderPins: renderPins,
-    hidePins: hidePins,
-    onError: onError
+    removeMapPins: removeMapPins
   };
 
 })();
