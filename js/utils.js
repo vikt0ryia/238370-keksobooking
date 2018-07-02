@@ -24,11 +24,21 @@
     return newArray;
   };
 
+  var hideElement = function (target) {
+    target.classList.add('hidden');
+  };
+
+  var showElement = function (target) {
+    target.classList.remove('hidden');
+  };
+
   window.utils = {
     getRandomInRange: getRandomInRange,
     getRandomValueFromArray: getRandomValueFromArray,
     shuffleArray: shuffleArray,
-    getRandomValuesFromArray: getRandomValuesFromArray
+    getRandomValuesFromArray: getRandomValuesFromArray,
+    hideElement: hideElement,
+    showElement: showElement
   };
 
 })();

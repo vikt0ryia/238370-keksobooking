@@ -21,8 +21,6 @@
     }
   };
 
-  var ESC_KEYCODE = 27;
-
   var cardTemplate = document.querySelector('template')
     .content
     .querySelector('.map__card');
@@ -35,11 +33,11 @@
     if (!cardElement) {
       cardElement = cardTemplate.cloneNode(true);
       window.map.map.insertBefore(cardElement, filtersContainer);
-      hideElement(cardElement);
+      window.utils.hideElement(cardElement);
 
       var popupClose = cardElement.querySelector('.popup__close');
       popupClose.addEventListener('click', function () {
-        hideElement(cardElement);
+        window.utils.hideElement(cardElement);
         var pinActive = window.map.map.querySelector('.map__pin--active');
         pinActive.classList.remove('map__pin--active');
         document.removeEventListener('keydown', onPopupEscPress);
@@ -65,25 +63,20 @@
     cardElement.querySelector('.popup__description').textContent = ad.offer.description;
 
     var photosContainer = cardElement.querySelector('.popup__photos');
-    var photoTemplate = photosContainer.querySelector('.popup__photo');
     photosContainer.innerHTML = '';
     for (var l = 0; l < ad.offer.photos.length; l++) {
-      var photoElement = photoTemplate.cloneNode(true);
+      var photoElement = document.createElement('img');
+      photoElement.classList.add('popup__photo');
       photoElement.src = ad.offer.photos[l];
+      photoElement.width = '45';
+      photoElement.height = '40';
+      photoElement.alt = 'Фотография жилья';
       photosContainer.appendChild(photoElement);
     }
 
     cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
 
     return cardElement;
-  };
-
-  var hideElement = function (target) {
-    target.classList.add('hidden');
-  };
-
-  var showElement = function (target) {
-    target.classList.remove('hidden');
   };
 
   var openAdModal = function () {
@@ -94,8 +87,8 @@
       elem.addEventListener('click', function () {
         closePopup();
         elem.classList.add('map__pin--active');
-        fillInTheAdCard(adCard, window.data.ads[i]);
-        showElement(adCard);
+        fillInTheAdCard(adCard, window.map.data[i]);
+        window.utils.showElement(adCard);
 
         document.addEventListener('keydown', onPopupEscPress);
       });
@@ -106,7 +99,7 @@
   var closePopup = function () {
     var card = window.map.map.querySelector('.map__card');
     if (card) {
-      hideElement(card);
+      window.utils.hideElement(card);
       document.removeEventListener('keydown', onPopupEscPress);
 
       var activePin = window.pin.pinList.querySelector('.map__pin--active');
@@ -117,7 +110,7 @@
   };
 
   var onPopupEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
+    if (evt.keyCode === window.response.ESC_KEYCODE) {
       closePopup();
     }
   };

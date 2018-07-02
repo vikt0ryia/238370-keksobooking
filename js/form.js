@@ -87,22 +87,37 @@
     window.map.adForm.reset();
     removeFieldsInvalidity();
     window.card.closePopup();
-    window.pin.hidePins(true);
+    window.pin.removeMapPins();
     blockForm(true);
     window.map.makeMapOfFaded(true);
     resetCoordOfMainPin();
+    window.map.allowToRenderingPins = true;
   };
 
-  var onSubmitBtnClick = function () {
-    var fields = window.map.adForm.querySelectorAll('input, select, textarea');
+  var onSuccess = function () {
+    window.response.showResponse('Ваше объявление успешно размещено!');
+  };
 
-    removeFieldsInvalidity();
+  var onError = function (message) {
+    window.response.showResponse(message);
+  };
 
-    fields.forEach(function (item) {
-      if (!item.validity.valid) {
-        item.classList.add('invalid');
-      }
-    });
+  var onSubmitBtnClick = function (evt) {
+    evt.preventDefault();
+    if (window.map.adForm.checkValidity()) {
+      window.backend.sendData(new FormData(window.map.adForm), onSuccess, onError);
+      onResetBtnClick();
+    } else {
+      var fields = window.map.adForm.querySelectorAll('input, select, textarea');
+
+      removeFieldsInvalidity();
+
+      fields.forEach(function (item) {
+        if (!item.validity.valid) {
+          item.classList.add('invalid');
+        }
+      });
+    }
   };
 
   submitBtn.addEventListener('click', onSubmitBtnClick);

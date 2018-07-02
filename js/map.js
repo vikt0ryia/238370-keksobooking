@@ -5,6 +5,9 @@
   var PIN_MAIN_WIDTH = 65;
   var PIN_MAIN_HEIGHT = 85;
 
+  var MIN_VALUE_Y = 130;
+  var MAX_VALUE_Y = 630;
+
   var map = document.querySelector('.map');
   var pinMain = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
@@ -22,6 +25,16 @@
   };
 
   addValueToAddressInput();
+
+  var uploadData = function (array) {
+    window.map.data = array;
+  };
+
+  var onError = function (message) {
+    window.response.showResponse(message);
+  };
+
+  window.backend.getData(uploadData, onError);
 
   pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -47,8 +60,8 @@
       var bordersOfPinPosition = {
         minX: 0,
         maxX: map.offsetWidth - PIN_MAIN_WIDTH,
-        minY: window.data.minValueY - PIN_MAIN_HEIGHT,
-        maxY: window.data.maxValueY - PIN_MAIN_HEIGHT
+        minY: MIN_VALUE_Y - PIN_MAIN_HEIGHT,
+        maxY: MAX_VALUE_Y - PIN_MAIN_HEIGHT
       };
 
       if (pinMain.offsetLeft - shift.x >= bordersOfPinPosition.minX &&
@@ -67,10 +80,15 @@
 
       makeMapOfFaded(false);
       window.form.blockForm(false);
-      window.pin.hidePins(false);
+
+      if (window.map.allowToRenderingPins) {
+        window.pin.renderPins(window.map.data);
+      }
+
       window.card.renderAdCard();
       addValueToAddressInput();
       window.card.openAdModal();
+      window.map.allowToRenderingPins = false;
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -81,6 +99,7 @@
   });
 
   window.map = {
+    allowToRenderingPins: true,
     map: map,
     pinMain: pinMain,
     adForm: adForm,

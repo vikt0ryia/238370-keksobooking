@@ -1169,7 +1169,7 @@ fieldset {
 
 /* Оверлей */
 
-.success {
+.response {
   position: fixed;
   top: 0;
   left: 0;
@@ -1190,7 +1190,7 @@ fieldset {
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-.success__message {
+.response__message {
   position: relative;
 
   color: #ffffff;
@@ -1198,7 +1198,7 @@ fieldset {
   font-weight: 700;
 }
 
-.success__message::before {
+.response__message::before {
   content: "";
   position: absolute;
 
