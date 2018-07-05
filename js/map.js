@@ -8,6 +8,8 @@
   var MIN_VALUE_Y = 130;
   var MAX_VALUE_Y = 630;
 
+  var DEBOUNCE_INTERVAL = 500;
+
   var map = document.querySelector('.map');
   var pinMain = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
@@ -25,16 +27,28 @@
   };
 
   addValueToAddressInput();
+  window.filter.blockFilters(true);
 
   var uploadData = function (array) {
     window.map.data = array;
+    updatePins();
   };
 
   var onError = function (message) {
     window.response.showResponse(message);
   };
 
-  window.backend.getData(uploadData, onError);
+  var updatePins = function () {
+    window.card.closePopup();
+    window.pin.removeMapPins();
+    window.map.filteredAds = window.filter.filterAds(window.map.data);
+    window.pin.renderPins(window.map.filteredAds);
+  };
+
+  var onFiltersChange = window.utils.debounce(updatePins, DEBOUNCE_INTERVAL);
+
+
+  window.filter.filtersForm.addEventListener('change', onFiltersChange);
 
   pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -79,16 +93,14 @@
       upEvt.preventDefault();
 
       makeMapOfFaded(false);
+      window.filter.blockFilters(false);
       window.form.blockForm(false);
 
-      if (window.map.allowToRenderingPins) {
-        window.pin.renderPins(window.map.data);
-      }
+      window.backend.getData(uploadData, onError);
 
       window.card.renderAdCard();
       addValueToAddressInput();
       window.card.openAdModal();
-      window.map.allowToRenderingPins = false;
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -99,7 +111,6 @@
   });
 
   window.map = {
-    allowToRenderingPins: true,
     map: map,
     pinMain: pinMain,
     adForm: adForm,

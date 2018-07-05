@@ -2,6 +2,8 @@
 
 (function () {
 
+  var ADS_AMOUNT = 5;
+
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
@@ -24,11 +26,17 @@
   var renderPins = function (ads) {
     var fragment = document.createDocumentFragment();
 
+    if (ads.length > ADS_AMOUNT) {
+      ads.length = ADS_AMOUNT;
+    }
+
     for (var i = 0; i < ads.length; i++) {
       fragment.appendChild(renderPin(ads[i]));
     }
 
     pinList.appendChild(fragment);
+
+    window.card.openAdModal();
   };
 
   var removeMapPins = function () {

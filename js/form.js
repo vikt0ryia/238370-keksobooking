@@ -89,9 +89,9 @@
     window.card.closePopup();
     window.pin.removeMapPins();
     blockForm(true);
+    window.filter.blockFilters(true);
     window.map.makeMapOfFaded(true);
     resetCoordOfMainPin();
-    window.map.allowToRenderingPins = true;
   };
 
   var onSuccess = function () {

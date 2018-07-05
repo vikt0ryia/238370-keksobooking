@@ -87,7 +87,7 @@
       elem.addEventListener('click', function () {
         closePopup();
         elem.classList.add('map__pin--active');
-        fillInTheAdCard(adCard, window.map.data[i]);
+        fillInTheAdCard(adCard, window.map.filteredAds[i]);
         window.utils.showElement(adCard);
 
         document.addEventListener('keydown', onPopupEscPress);
