@@ -35,6 +35,8 @@
     }
 
     pinList.appendChild(fragment);
+
+    window.card.openAdModal();
   };
 
   var removeMapPins = function () {

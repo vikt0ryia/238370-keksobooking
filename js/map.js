@@ -47,6 +47,7 @@
   };
 
   var updatePins = function () {
+    window.card.closePopup();
     window.pin.removeMapPins();
     window.map.filteredAds = window.filter.filterAds(window.map.data);
     window.pin.renderPins(window.map.filteredAds);
