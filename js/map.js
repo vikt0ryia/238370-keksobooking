@@ -8,6 +8,8 @@
   var MIN_VALUE_Y = 130;
   var MAX_VALUE_Y = 630;
 
+  var DEBOUNCE_INTERVAL = 500;
+
   var map = document.querySelector('.map');
   var pinMain = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
@@ -18,6 +20,14 @@
     map.classList.toggle('map--faded', status);
   };
 
+  var blockFilters = function (status) {
+    status = status || false;
+    var fields = window.filter.filtersForm.querySelectorAll('input, select');
+    fields.forEach(function (elem) {
+      elem.disabled = status;
+    });
+  };
+
   var addValueToAddressInput = function () {
     var coordXOfMainPin = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2));
     var coordYOfMaimPin = (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
@@ -25,16 +35,27 @@
   };
 
   addValueToAddressInput();
+  blockFilters(true);
 
   var uploadData = function (array) {
     window.map.data = array;
+    updatePins();
   };
 
   var onError = function (message) {
     window.response.showResponse(message);
   };
 
-  window.backend.getData(uploadData, onError);
+  var updatePins = function () {
+    window.pin.removeMapPins();
+    window.map.filteredAds = window.filter.filterAds(window.map.data);
+    window.pin.renderPins(window.map.filteredAds);
+  };
+
+  var onFiltersChange = window.utils.debounce(updatePins, DEBOUNCE_INTERVAL);
+
+
+  window.filter.filtersForm.addEventListener('change', onFiltersChange);
 
   pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -79,16 +100,14 @@
       upEvt.preventDefault();
 
       makeMapOfFaded(false);
+      blockFilters(false);
       window.form.blockForm(false);
 
-      if (window.map.allowToRenderingPins) {
-        window.pin.renderPins(window.map.data);
-      }
+      window.backend.getData(uploadData, onError);
 
       window.card.renderAdCard();
       addValueToAddressInput();
       window.card.openAdModal();
-      window.map.allowToRenderingPins = false;
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -99,11 +118,11 @@
   });
 
   window.map = {
-    allowToRenderingPins: true,
     map: map,
     pinMain: pinMain,
     adForm: adForm,
     makeMapOfFaded: makeMapOfFaded,
+    blockFilters: blockFilters,
     addValueToAddressInput: addValueToAddressInput
   };
 
