@@ -43,15 +43,15 @@
   };
 
   var compareFeatures = function (adFeatures) {
-    var result = true;
+    var selectedFeatures = filterFeatures.querySelectorAll('input:checked');
 
-    filterFeatures.querySelectorAll('input:checked').forEach(function (item) {
-      if (adFeatures.indexOf(item.value) === -1) {
-        result = false;
+    for (var i = 0; i < selectedFeatures.length; i++) {
+      if (adFeatures.indexOf(selectedFeatures[i].value) === -1) {
+        return false;
       }
-    });
+    }
 
-    return result;
+    return true;
   };
 
   var filterAds = function (ads) {
