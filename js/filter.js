@@ -2,9 +2,15 @@
 
 (function () {
 
-  var VALUE_ANY = 'any';
-  var PRICE_LOW = 10000;
-  var PRICE_HIGH = 50000;
+  var ANY_VALUE = 'any';
+  var MIN_PRICE = 10000;
+  var MAX_PRICE = 50000;
+
+  var PRICE_VALUES = {
+    LOW: 'low',
+    HIGH: 'high',
+    MIDDLE: 'middle'
+  };
 
   var filtersForm = document.querySelector('.map__filters');
   var filterType = filtersForm.querySelector('#housing-type');
@@ -14,33 +20,30 @@
   var filterFeatures = filtersForm.querySelector('#housing-features');
 
   var compareValue = function (adValue, filterValue) {
-    return filterValue === VALUE_ANY || filterValue === adValue.toString();
+    return filterValue === ANY_VALUE || filterValue === adValue.toString();
   };
 
   var getPriceRangeAd = function (price) {
     switch (true) {
-      case price < PRICE_LOW:
-        return 'low';
-      case price > PRICE_HIGH:
-        return 'high';
+      case price < MIN_PRICE:
+        return PRICE_VALUES.LOW;
+      case price > MAX_PRICE:
+        return PRICE_VALUES.HIGH;
       default:
-        return 'middle';
+        return PRICE_VALUES.MIDDLE;
     }
   };
 
-  var compareFeatures = function (adList) {
-    var selectedFeatures = [];
+  var compareFeatures = function (adFeatures) {
+    var result = true;
+
     filterFeatures.querySelectorAll('input:checked').forEach(function (item) {
-      selectedFeatures.push(item.value);
+      if (adFeatures.indexOf(item.value) === -1) {
+        result = false;
+      }
     });
 
-    for (var i = 0; i < selectedFeatures.length; i++) {
-      if (adList.indexOf(selectedFeatures[i]) === -1) {
-        return false;
-      }
-    }
-
-    return true;
+    return result;
   };
 
   var filterAds = function (ads) {
