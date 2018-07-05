@@ -19,6 +19,14 @@
   var filterGuests = filtersForm.querySelector('#housing-guests');
   var filterFeatures = filtersForm.querySelector('#housing-features');
 
+  var blockFilters = function (status) {
+    status = status || false;
+    var fields = window.filter.filtersForm.querySelectorAll('input, select');
+    fields.forEach(function (elem) {
+      elem.disabled = status;
+    });
+  };
+
   var compareValue = function (adValue, filterValue) {
     return filterValue === ANY_VALUE || filterValue === adValue.toString();
   };
@@ -58,6 +66,7 @@
 
   window.filter = {
     filtersForm: filtersForm,
+    blockFilters: blockFilters,
     filterAds: filterAds
   };
 

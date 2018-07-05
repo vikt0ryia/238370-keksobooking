@@ -89,7 +89,7 @@
     window.card.closePopup();
     window.pin.removeMapPins();
     blockForm(true);
-    window.map.blockFilters(true);
+    window.filter.blockFilters(true);
     window.map.makeMapOfFaded(true);
     resetCoordOfMainPin();
   };

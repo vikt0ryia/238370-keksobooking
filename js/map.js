@@ -20,14 +20,6 @@
     map.classList.toggle('map--faded', status);
   };
 
-  var blockFilters = function (status) {
-    status = status || false;
-    var fields = window.filter.filtersForm.querySelectorAll('input, select');
-    fields.forEach(function (elem) {
-      elem.disabled = status;
-    });
-  };
-
   var addValueToAddressInput = function () {
     var coordXOfMainPin = (parseInt(pinMain.style.left, 10) + Math.floor(PIN_MAIN_WIDTH / 2));
     var coordYOfMaimPin = (parseInt(pinMain.style.top, 10) + PIN_MAIN_HEIGHT);
@@ -35,7 +27,7 @@
   };
 
   addValueToAddressInput();
-  blockFilters(true);
+  window.filter.blockFilters(true);
 
   var uploadData = function (array) {
     window.map.data = array;
@@ -101,7 +93,7 @@
       upEvt.preventDefault();
 
       makeMapOfFaded(false);
-      blockFilters(false);
+      window.filter.blockFilters(false);
       window.form.blockForm(false);
 
       window.backend.getData(uploadData, onError);
@@ -123,7 +115,6 @@
     pinMain: pinMain,
     adForm: adForm,
     makeMapOfFaded: makeMapOfFaded,
-    blockFilters: blockFilters,
     addValueToAddressInput: addValueToAddressInput
   };
 
